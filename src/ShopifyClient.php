@@ -369,20 +369,20 @@ class ShopifyClient
      * Using __call magic methods is equivalent to creating and executing a single command. It also supports using optimized
      * iterator requests by adding "Iterator" keyword to the command
      *
-     * @param  $method
-     * @param  array $args
+     * @param  string $name
+     * @param  array  $arguments
      * @return array|Generator
      */
-    public function __call($method, $args = [])
+    public function __call($name, $arguments)
     {
-        $args = $args[0] ?? [];
+        $arguments = $arguments[0] ?? [];
 
         // Allow magic method calls for iterators (e.g. $client-><CommandName>Iterator($params))
-        if (substr($method, -8) === 'Iterator') {
-            return $this->iterateResources(substr($method, 0, -8), $args);
+        if (substr($name, -8) === 'Iterator') {
+            return $this->iterateResources(substr($name, 0, -8), $arguments);
         }
 
-        $command = $this->getCommand($method, $args);
+        $command = $this->getCommand($name, $arguments);
 
         return $this->execute($command);
     }
