@@ -118,6 +118,27 @@ use ZfrShopify\Exception\RuntimeException;
  * @method array updateGiftCard(array $args = []) {@command Shopify CreateGiftCard}
  * @method array disableGiftCard(array $args = []) {@command Shopify DisableGiftCard}
  *
+ * INVENTORY ITEM RELATED METHODS:
+ *
+ * @method array getInventoryItems(array $args = []) {@command Shopify GetInventoryItems}
+ * @method array getInventoryItem(array $args = []) {@command Shopify GetInventoryItem}
+ * @method array updateInventoryItem(array $args = []) {@command Shopify UpdateInventoryItem}
+ *
+ * INVENTORY LEVEL RELATED METHODS
+ *
+ * @method array getInventoryLevels(array $args = []) {@command Shopify GetInventoryLevels}
+ * @method array adjustInventoryLevel(array $args = []) {@command Shopify AdjustInventoryLevel}
+ * @method array deleteInventoryLevel(array $args = []) {@command Shopify DeleteInventoryLevel}
+ * @method array connectInventoryLevel(array $args = []) {@command Shopify ConnectInventoryLevel}
+ * @method array setInventoryLevel(array $args = []) {@command Shopify SetInventoryLevel}
+ *
+ * LOCATION RELATED METHODS:
+ *
+ * @method array getLocations(array $args = []) {@command Shopify GetLocations}
+ * @method array getLocation(array $args = []) {@command Shopify GetLocation}
+ * @method int getLocationCount(array $args = []) {@command Shopify GetLocationCount}
+ * @method array getLocationInventoryLevels(array $args = []) {@command Shopify GetLocationInventoryLevels}
+ *
  * METAFIELDS RELATED METHODS:
  * 
  * @method array getMetafields(array $args = []) {@command Shopify GetMetafields}
@@ -375,20 +396,20 @@ class ShopifyClient
      * Using __call magic methods is equivalent to creating and executing a single command. It also supports using optimized
      * iterator requests by adding "Iterator" keyword to the command
      *
-     * @param  string $name
-     * @param  array  $arguments
+     * @param  $method
+     * @param  array $args
      * @return array|Generator
      */
-    public function __call($name, $arguments)
+    public function __call($method, $args)
     {
-        $arguments = $arguments[0] ?? [];
+        $args = $args[0] ?? [];
 
         // Allow magic method calls for iterators (e.g. $client-><CommandName>Iterator($params))
-        if (substr($name, -8) === 'Iterator') {
-            return $this->iterateResources(substr($name, 0, -8), $arguments);
+        if (substr($method, -8) === 'Iterator') {
+            return $this->iterateResources(substr($method, 0, -8), $args);
         }
 
-        $command = $this->getCommand($name, $arguments);
+        $command = $this->getCommand($method, $args);
 
         return $this->execute($command);
     }
